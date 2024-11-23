@@ -1,7 +1,8 @@
-from app import add, external_api_data
+# tests/test_integration.py
 
-def test_add_and_external_api():
+from app.main import add, multiply
+
+def test_add_and_multiply():
     result = add(2, 3)
-    data = external_api_data()
-    assert result == 5
-    assert "title" in data
+    assert multiply(result, 2) == 10
+

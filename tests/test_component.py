@@ -1,15 +1,13 @@
-from app import external_api_data
+# tests/test_component.py
 
-def test_external_api_data(monkeypatch):
-    # Mocking the external API response
-    class MockResponse:
-        @staticmethod
-        def json():
-            return {"id": 1, "title": "Test Title"}
+import pytest
+from app.main import divide
 
-    def mock_get(*args, **kwargs):
-        return MockResponse()
+def test_divide():
+    assert divide(10, 2) == 5
+    assert divide(5, 2) == 2.5
 
-    monkeypatch.setattr("requests.get", mock_get)
-    data = external_api_data()
-    assert data["title"] == "Test Title"
+def test_divide_by_zero():
+    with pytest.raises(ValueError):
+        divide(1, 0)
+

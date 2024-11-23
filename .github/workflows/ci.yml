@@ -1,4 +1,6 @@
-name: CI Pipeline
+# .github/workflows/ci.yml
+
+name: Python CI
 
 on:
   push:
@@ -9,46 +11,23 @@ on:
       - master
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-
     steps:
-    # Step 1: Check out the repository
-    - name: Checkout Code
+    - name: Checkout code
       uses: actions/checkout@v3
 
-    # Step 2: Set up Python environment
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.10'  # Ensure this version matches your requirements
+        python-version: '3.9'
 
-    # Step 3: Upgrade pip and install dependencies
-    - name: Install Dependencies
+    - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt || true  # Prevent pipeline failure if debugging is needed
-        pip debug --verbose  # Output detailed dependency resolution logs for debugging
+        pip install -r requirements.txt
 
-    # Step 4: Install pytest explicitly if needed
-    - name: Install pytest
+    - name: Run tests
       run: |
-        pip install pytest
-
-    # Step 5: Run Unit Tests
-    - name: Run Unit Tests
-      run: pytest --junitxml=test-results.xml
-
-    # Step 6: Save test results (optional, for CI/CD pipelines using reports)
-    - name: Upload Test Results
-      uses: actions/upload-artifact@v3
-      with:
-        name: test-results
-        path: test-results.xml
-
-    # Step 7: Include Debugging Information
-    - name: Debug Python Environment
-      run: |
-        python --version
-        pip list
+        pytest --maxfail=1 --disable-warnings -q
 
