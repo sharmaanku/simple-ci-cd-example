@@ -3,10 +3,10 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -30,18 +30,23 @@ jobs:
         pip install -r requirements.txt || true  # Prevent pipeline failure if debugging is needed
         pip debug --verbose  # Output detailed dependency resolution logs for debugging
 
-    # Step 4: Run unit tests
+    # Step 4: Install pytest explicitly if needed
+    - name: Install pytest
+      run: |
+        pip install pytest
+
+    # Step 5: Run Unit Tests
     - name: Run Unit Tests
       run: pytest --junitxml=test-results.xml
 
-    # Step 5: Save test results (optional, for CI/CD pipelines using reports)
+    # Step 6: Save test results (optional, for CI/CD pipelines using reports)
     - name: Upload Test Results
       uses: actions/upload-artifact@v3
       with:
         name: test-results
         path: test-results.xml
 
-    # Step 6: Include Debugging Information
+    # Step 7: Include Debugging Information
     - name: Debug Python Environment
       run: |
         python --version
